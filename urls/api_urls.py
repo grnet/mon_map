@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*- vim:encoding=utf-8:
 from django.conf.urls import patterns, url
-from maps.views import api
+from mon_map.views import api
 
 urlpatterns = patterns(
     '',
