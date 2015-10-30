@@ -1,0 +1,14 @@
+{% load i18n %}
+<div class="container" id="network-load" data-url="{% url api:load-total %}">
+	<h3>
+		<a href="{% url maps:metro-map %}" class="col-sm-12">
+			<i class="fa fa-heartbeat"></i> {% trans "Network Load" %}
+		</a>
+	</h3>
+	<div id="container-network"  class="col-md-12">
+        <div class='gauge0 col-md-4' style="height: 200px"></div>
+        <div class='gauge1 col-md-4' style="height: 200px">loading...</div>
+        <div class='gauge2 col-md-4' style="height: 200px"></div>
+	</div>
+</div>
+

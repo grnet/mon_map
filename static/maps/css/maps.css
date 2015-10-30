@@ -1,0 +1,215 @@
+
+#main {
+	margin: 1% 7%;
+
+}
+
+header a.active {
+	color: orange;
+}
+
+.bandwidths, .memo {
+	float: right;
+	margin-top: 5px;
+}
+
+.memo li {
+	list-style: none;
+}
+
+.bandwidths li {
+	margin-top: 10px;
+	list-style: none;
+}
+
+.bandwidths li span {
+	display: inline-block;
+	width: 20px;
+	margin-right: 10px;
+}
+
+.memo span {
+	display: inline-block;
+	padding: 10px;
+}
+
+header .grnetlogo {
+	display: inline-block;
+	height: 100px;
+	position: absolute;
+	top: 10px;
+	left: 40px;
+	width: 230px;
+	height: 50px;
+}
+
+header .grnetlogo img {
+	display: block;
+	position: absolute;
+	top: 0;
+	left: 0;
+	margin-right: 10px;
+}
+
+header .grnetlogo span {
+	position: absolute;
+	top: 5px;
+	right: 0;
+	float: none;
+}
+
+header .title {
+	position: absolute;
+	right: 0;
+	bottom: 0;
+	font-size: 22px;
+	margin-top: 27px;
+}
+
+
+.menu {
+	float: right;
+	margin-right: 200px;
+	margin-top: 20px;
+	position: relative;
+}
+
+
+#info-box {
+	position: fixed;
+	display: none;
+	padding: 10px;
+	background: white;
+	border: 1px solid #eeeeee;
+}
+
+#info-box.hovering {
+	display: block;
+}
+
+#svg {
+	position: relative;
+	padding-top: 5px;
+}
+
+#svg text {
+	fill: black;
+}
+
+#svg svg path:hover, #svg svg  ellipse:hover {
+	cursor: pointer;
+	stroke: black !important;
+}
+
+#svg svg ellipse:hover {
+	fill: black !important;
+}
+
+
+#svg:after {
+	content: "";
+	display: block;
+	background: FireBrick;
+	width: 0%;
+	height: 5px;
+	top: 0%;
+	left: 0%;
+	position: absolute;
+}
+
+ul.layers li.clicked {
+	color: red;
+}
+
+ul.layers {
+	width: 10%;
+	list-style: none;
+	padding: 0;
+	margin: 0;
+}
+
+ul.layers li {
+	background: silver;
+	color: white;
+	text-align: center;
+}
+ul.layers li:hover {
+	cursor: pointer;
+	background: gray;
+}
+
+#timespan input[type=submit] {
+	display: none;
+}
+
+
+.d3-tip {
+  line-height: 1;
+  font-weight: bold;
+  padding: 12px;
+  background: rgba(0, 0, 0, 0.8);
+  color: #fff;
+  border-radius: 2px;
+  margin-top: 20px;
+  z-index: 100;
+}
+
+#reportrange {
+	background: #eeeeee;
+	border: 1px solid silver;
+	padding: 5px;
+	display: inline-block;
+
+}
+
+#popup.open {
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	background: rgba(255, 255, 255, 0.8);
+	z-index: 1000;
+	display: block;
+	padding-bottom: 800px;
+}
+
+#popup {
+	display: none;
+}
+
+#popup.open .close-button {
+	float: right;
+	color: black;
+	font-size: 100px;
+	padding: 80px 40px;
+	font-weight: 800;
+	cursor: pointer;
+	position: fixed;
+	top: 0;
+	right: 0;
+}
+
+#popup.open .text {
+	margin: 100px auto;
+	width: 500px;
+}
+
+#popup.open .text img {
+	width: 100%;
+	display: block;
+	margin: 10px 0;
+}
+
+#popup.open .text h5 {
+	display: inline-block;
+	margin-right: 20px;
+}
+
+#popup.open .text h4 {
+	text-align: center;
+}
+
+
+.hidden {
+	display: none;
+}

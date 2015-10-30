@@ -1,0 +1,81 @@
+{% extends "grnetindex.html" %}
+{% load staticfiles %}
+
+{% block extrahead %}
+	<link type="text/css" rel="stylesheet" href="{% static 'maps/css/maps.css' %}">
+	<link type="text/css" rel="stylesheet" href="{% static 'css/daterangepicker-bs3.css' %}">
+	<link type="text/css" rel="stylesheet" href="{% static 'maps/css/nprogress.css' %}">
+{% endblock %}
+
+{% block extramenu %}
+<ul class="nav navbar-nav">
+    <li class="dropdown">
+     	<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Weather Map <span class="caret"></span></a>
+    	<ul class="dropdown-menu" role="menu">
+        	<li><a href="{% url maps:metro-map %}">IP-Carier</a></li>
+        	<li><a href="{% url maps:metro-map %}?type=network">Datacenter</a></li>
+    	</ul>
+	</li>
+    <li class="dropdown">
+     	<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Network Map<span class="caret"></span></a>
+    	<ul class="dropdown-menu" role="menu">
+        	<li><a href="{% url maps:metro-map %}?raw=True">IP-Carier</a></li>
+        	<li><a href="{% url maps:metro-map %}?type=network&amp;raw=True">Datacenter</a></li>
+    	</ul>
+	</li>
+</ul>
+{% endblock %}
+
+{% block content %}
+	<section id="main" >
+		{% if url %}
+		<form action="" id="timespan">
+			<div id="reportrange">
+				<i class="fa fa-calendar fa-lg"></i>
+				<b class="caret"></b>
+				<span>default</span>
+			</div>
+			<input type="hidden" name="" id="start" placeholder='start'>
+			<input type="hidden" name="" id="end" placeholder='end'>
+			<input type="submit" name="" id="">
+		</form>
+		<div class='updated hidden'>Last Updated: <span class="last-updated"></span></div>
+		<ul class="memo">
+			<li><span style='background: #4000c3'></span> &lt;1% </li>
+			<li><span style='background: #3845c4'></span> 1-10% </li>
+			<li><span style='background: #009895'></span> 10-25% </li>
+			<li><span style='background: #00d92d'></span> 25-40% </li>
+			<li><span style='background: #8ad72d'></span> 40-70% </li>
+			<li><span style='background: #c66517'></span> 70-85% </li>
+			<li><span style='background: #c80003'></span> 85-100% </li>
+		</ul>
+		<ul class="bandwidths">
+			<li><span style='background: #4000c3; height: 2px; color'></span>1G</li>
+			<li><span style='background: #4000c3; height: 4px;'></span>2G</li>
+			<li><span style='background: #4000c3; height: 7px;'></span>10G</li>
+			<li><span style='background: #4000c3; height: 10px;'></span>20G</li>
+			<li><span style='background: #4000c3; height: 15px;'></span>30G</li>
+		</ul>
+		<div id="popup">
+			<div class='close-button'>X</div>
+			<div class='text'></div>
+		</div>
+		<div id="svg" type="image/svg+xml"  data-url='{{ url }}' data-load-url='{% url api:load-total %}' data-bandwidth-url='{% url api:bandwidth-total %}'>
+		</div>
+		{% else %}
+		<div id="svg" type="image/svg+xml" height="100%" width="100%">
+			<img src="{% static 'images/'|add:svg|add:'.svg' %}" width='100%'/>
+		</div>
+		{% endif %}
+	</section>
+{% endblock %}
+
+
+{% block extrafooter %}
+	<script src="{% static 'maps/js/d3.v3.min.js' %}" charset="utf-8"></script>
+	<script src="{% static 'maps/js/d3.tip.js' %}" charset="utf-8"></script>
+	<script src="{% static 'maps/js/moment.js' %}" charset="utf-8"></script>
+	<script src="{% static 'maps/js/daterangepicker.js' %}" charset="utf-8"></script>
+	<script src="{% static 'maps/js/nprogress.js' %}" charset="utf-8"></script>
+	<script src="{% static 'maps/js/script.js' %}" charset="utf-8"></script>
+{% endblock %}
