@@ -72,10 +72,12 @@
 
 
 {% block extrafooter %}
+{% if url %}
 	<script src="{% static 'maps/js/d3.v3.min.js' %}" charset="utf-8"></script>
 	<script src="{% static 'maps/js/d3.tip.js' %}" charset="utf-8"></script>
 	<script src="{% static 'maps/js/moment.js' %}" charset="utf-8"></script>
 	<script src="{% static 'maps/js/daterangepicker.js' %}" charset="utf-8"></script>
 	<script src="{% static 'maps/js/nprogress.js' %}" charset="utf-8"></script>
 	<script src="{% static 'maps/js/script.js' %}" charset="utf-8"></script>
+{% endif %}
 {% endblock %}
