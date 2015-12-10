@@ -101,7 +101,6 @@ def graph_for_each_interface(datasources, start='-1d', end='-100'):
         dss = datasources[i * 2:i * 2 + 2]
         if dss:
             ifce = Ifce.objects.get(pk=dss[0].object_id)
-            # import pdb; pdb.set_trace()
             try:
                 png = dss[0].graph_set.filter(type='traffic')[0].get_draw_url()
                 mon = dss[0].graph_set.filter(type='traffic')[0].get_absolute_url()
