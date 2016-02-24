@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*- vim:encoding=utf-8:
+    # -*- coding: utf-8 -*- vim:encoding=utf-8:
 import json
 from django.http import HttpResponse
 from django.core.cache import cache
@@ -10,6 +10,7 @@ from utils import (
     create_links_dict
 )
 from svg_utils import parse_map
+from itertools import chain
 
 
 def metro_map_json(request):
@@ -95,10 +96,25 @@ def load(request):
 def link(request, from_node, to_node, separate=False):
     start = request.GET.get('start', None)
     end = request.GET.get('end', None)
-    links = Links.objects.filter(
+
+    links = []
+
+    links1 = Links.objects.filter(
         local_ifce__node__name=from_node,
         remote_ifce__node__name=to_node
     )
+
+    links2 = Links.objects.filter(
+        local_ifce__node__name=to_node,
+        remote_ifce__node__name=from_node
+    )
+
+    for link in links2:
+        if link not in links1:
+            links.append(link)
+
+    links = list(chain(links, links1))
+
     if links:
         response = []
         datasources = []
@@ -110,7 +126,8 @@ def link(request, from_node, to_node, separate=False):
             # try to get all available datasources
             if not ds:
                 ds = link.remote_ifce.get_datasources(type='traffic')
-            datasources.append(ds)
+            if ds not in datasources:
+                datasources.append(ds)
         datasources = [val for sublist in datasources for val in sublist]
         if not separate:
             if start and end:
