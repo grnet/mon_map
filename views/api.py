@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*- vim:encoding=utf-8:
+    # -*- coding: utf-8 -*- vim:encoding=utf-8:
 import json
 from django.http import HttpResponse
 from django.core.cache import cache
@@ -134,7 +134,7 @@ def link(request, from_node, to_node, separate=False):
                 url = create_graph_for_interfaces(datasources, start, end) or False
             else:
                 url = create_graph_for_interfaces(datasources) or False
-            result = {'links': response, 'graph': False}
+            result = {'links': response, 'graph': url}
         else:
             if start and end:
                 urls = graph_for_each_interface(datasources, start, end)
