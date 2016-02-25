@@ -1,5 +1,6 @@
 import rrdtool
 import time
+import os
 
 from django.core.urlresolvers import reverse
 from django.conf import settings
@@ -118,7 +119,6 @@ def graph_for_each_interface(datasources, start='-1d', end='-100'):
 
 
 def create_graph_for_interfaces(datasources, start=None, end=None, **kwargs):
-    
     if 'dryrun' in kwargs:
         dryrun = kwargs['dryrun']
     else:
@@ -129,7 +129,7 @@ def create_graph_for_interfaces(datasources, start=None, end=None, **kwargs):
     if not end:
         end = '-100'
     if datasources:
-        name = datasources[0].rrdfile.path.split('/')[-1].split('.')
+        name = os.path.basename(datasources[0].rrdfile.path).split('.')
         if name[0]:
             name = name[0]
         else:
@@ -137,10 +137,13 @@ def create_graph_for_interfaces(datasources, start=None, end=None, **kwargs):
         title = '%s to %s' % (name.split('-')[0], name.split('-')[1])
         arguments = ['%s/%s%s%s.png' % (settings.RG_STATICPATH, name, start, end)]
 
+        if hasattr(settings, 'RG_RRDCACHED'):
+            arguments.append('--daemon=%s' % str(settings.RG_RRDCACHED))
         arguments.append('-s %s' % start)
         arguments.append('-e %s' % end)
         arguments.append('-t %s' % title)
         arguments.append('--slope-mode')
+        arguments.append('-l 0')
         aggregate_dict = {'ds0': [], 'ds1': []}
         interfaces_dict = {
             'ds0': {

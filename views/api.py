@@ -97,7 +97,7 @@ def link(request, from_node, to_node, separate=False, fake=''):
     start = request.GET.get('start', None)
     end = request.GET.get('end', None)
 
-    dryrun = True if fake is not '' else False
+    dryrun = True if fake != '' else False
 
     links = []
 
