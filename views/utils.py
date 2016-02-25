@@ -117,7 +117,7 @@ def graph_for_each_interface(datasources, start='-1d', end='-100'):
     return response
 
 
-def create_graph_for_interfaces(datasources, start=None, end=None):
+def create_graph_for_interfaces(datasources, start=None, end=None, dryrun=False):
     if not start:
         start = '-1d'
     if not end:
@@ -176,7 +176,23 @@ def create_graph_for_interfaces(datasources, start=None, end=None):
             legend.append('%s:aggr%s:%s:%s' % ('GPRINT', key, 'LAST', '\t%4.2lf%s\\n'))
         arguments.extend(legend)
         args = [str(val) for val in arguments]
-        rrdtool.graphv(*args)
+
+        if dryrun == True:
+            import re
+            for ri in range(len(args)):
+                if args[ri].find('-') == 0 and \
+                        len(args[ri].split()) > 2:
+                    larg = args[ri].split()
+                    larg[1] = "'" + larg[1]
+                    larg[-1] = larg[-1] + "'"
+                    args[ri] = ' '.join(larg)
+                elif bool(re.search(r'^([CV]?DEF|AREA|GPRINT|COMMENT|HRULE):',
+                                    args[ri])):
+                    args[ri] = "'%s'" % args[ri]
+            return ' \n'.join('rrdtool graph'.split() + args)
+        else:
+            rrdtool.graphv(*args)
+
         url = reverse(
             'get-png-data',
             kwargs={

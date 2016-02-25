@@ -1,4 +1,4 @@
-    # -*- coding: utf-8 -*- vim:encoding=utf-8:
+# -*- coding: utf-8 -*- vim:encoding=utf-8:
 import json
 from django.http import HttpResponse
 from django.core.cache import cache
@@ -93,9 +93,11 @@ def load(request):
     return HttpResponse(result, content_type='application/json')
 
 
-def link(request, from_node, to_node, separate=False):
+def link(request, from_node, to_node, separate=False, fake=''):
     start = request.GET.get('start', None)
     end = request.GET.get('end', None)
+
+    dryrun = True if fake is not '' else False
 
     links = []
 
@@ -131,9 +133,9 @@ def link(request, from_node, to_node, separate=False):
         datasources = [val for sublist in datasources for val in sublist]
         if not separate:
             if start and end:
-                url = create_graph_for_interfaces(datasources, start, end) or False
+                url = create_graph_for_interfaces(datasources, start, end, dryrun) or False
             else:
-                url = create_graph_for_interfaces(datasources) or False
+                url = create_graph_for_interfaces(datasources, dryrun) or False
             result = {'links': response, 'graph': url}
         else:
             if start and end:
