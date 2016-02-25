@@ -133,9 +133,9 @@ def link(request, from_node, to_node, separate=False, fake=''):
         datasources = [val for sublist in datasources for val in sublist]
         if not separate:
             if start and end:
-                url = create_graph_for_interfaces(datasources, start, end, dryrun) or False
+                url = create_graph_for_interfaces(datasources, start, end, dryrun=dryrun) or False
             else:
-                url = create_graph_for_interfaces(datasources, dryrun) or False
+                url = create_graph_for_interfaces(datasources, dryrun=dryrun) or False
             result = {'links': response, 'graph': url}
         else:
             if start and end:

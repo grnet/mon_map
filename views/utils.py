@@ -117,7 +117,13 @@ def graph_for_each_interface(datasources, start='-1d', end='-100'):
     return response
 
 
-def create_graph_for_interfaces(datasources, start=None, end=None, dryrun=False):
+def create_graph_for_interfaces(datasources, start=None, end=None, **kwargs):
+    
+    if 'dryrun' in kwargs:
+        dryrun = kwargs['dryrun']
+    else:
+        dryrun = False
+
     if not start:
         start = '-1d'
     if not end:
