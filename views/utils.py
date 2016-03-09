@@ -178,7 +178,7 @@ def create_graph_for_interfaces(datasources, start=None, end=None, **kwargs):
             for rrd in val:
                 arguments[-1] += 'd%sdispAVG,' % rrd
                 if rrd != val[0]:
-                    arguments[-1] += '+,'
+                    arguments[-1] += 'ADDNAN,'
             legend.append('%s:aggr%s:%s:%s' % ('GPRINT', key, 'MIN', '\t%4.2lf%s\g'))
             legend.append('%s:aggr%s:%s:%s' % ('GPRINT', key, 'MAX', '\t%4.2lf%s\g'))
             legend.append('%s:aggr%s:%s:%s' % ('GPRINT', key, 'AVERAGE', '\t%4.2lf%s\g'))

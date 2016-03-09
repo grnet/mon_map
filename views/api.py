@@ -10,7 +10,6 @@ from utils import (
     create_links_dict
 )
 from svg_utils import parse_map
-from itertools import chain
 
 
 def metro_map_json(request):
@@ -101,22 +100,10 @@ def link(request, from_node, to_node, separate=False, fake=''):
 
     links = []
 
-    links1 = Links.objects.filter(
+    links = Links.objects.filter(
         local_ifce__node__name=from_node,
         remote_ifce__node__name=to_node
     )
-
-    links2 = Links.objects.filter(
-        local_ifce__node__name=to_node,
-        remote_ifce__node__name=from_node
-    )
-
-    for link in links2:
-        if link not in links1:
-            links.append(link)
-
-    links = list(chain(links, links1))
-
     if links:
         response = []
         datasources = []
@@ -128,8 +115,7 @@ def link(request, from_node, to_node, separate=False, fake=''):
             # try to get all available datasources
             if not ds:
                 ds = link.remote_ifce.get_datasources(type='traffic')
-            if ds not in datasources:
-                datasources.append(ds)
+            datasources.append(ds)
         datasources = [val for sublist in datasources for val in sublist]
         if not separate:
             if start and end:
