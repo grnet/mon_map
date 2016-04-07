@@ -96,9 +96,16 @@ def get_load_for_links(ifces, start=None, end=None):
     return response
 
 
-def graph_for_each_interface(datasources, start='-1d', end='-100'):
-    aggregate = create_graph_for_interfaces(datasources, start, end)
-    response = {'Total': aggregate}
+def graph_for_each_interface(graph, datasources, start='-1d', end='-300'):
+
+    url = reverse(
+        'get-png-data',
+        kwargs={
+            'path': '%s-1d-300.png' % graph.id
+        }
+    )
+    response = {'Total': url}
+
     for i in range(0, len(datasources) / 2):
         dss = datasources[i * 2:i * 2 + 2]
         if dss:
@@ -108,8 +115,6 @@ def graph_for_each_interface(datasources, start='-1d', end='-100'):
                 mon = dss[0].graph_set.filter(type='traffic')[0].get_absolute_url()
             except IndexError:
                 continue
-            if start and end:
-                png += '%s,%s/' % (start, end)
             response.update({
                 ifce.name: {
                     'png': png,
