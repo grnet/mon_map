@@ -98,13 +98,7 @@ def get_load_for_links(ifces, start=None, end=None):
 
 def graph_for_each_interface(graph, datasources, start='-1d', end='-300'):
 
-    url = reverse(
-        'get-png-data',
-        kwargs={
-            'path': '%s-1d-300.png' % graph.id
-        }
-    )
-    response = {'Total': url}
+    response = {'Total': graph.get_draw_url()}
 
     for i in range(0, len(datasources) / 2):
         dss = datasources[i * 2:i * 2 + 2]
@@ -266,12 +260,8 @@ def get_graph_for_node_link(local, remote, separate=False):
             response = graph_for_each_interface(
                 graph, graph.datasources.all(), '-1d', '-300')
         else:
-            url = reverse(
-                'get-png-data',
-                kwargs={'path': '%s-1d-300.png' % graph.id}
-            )
             response = {
-                'graph': url,
+                'graph': graph.get_draw_url(),
                 'links': [{"from_descr": graph.description}]
             }
 
