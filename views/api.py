@@ -3,11 +3,13 @@ import json
 from django.http import HttpResponse
 from django.core.cache import cache
 from network.models import Links
+from rg.models import Graph
 from utils import (
     create_graph_for_interfaces,
     graph_for_each_interface,
     get_load_for_links,
-    create_links_dict
+    create_links_dict,
+    get_graph_for_node_link
 )
 from svg_utils import parse_map
 
@@ -93,42 +95,8 @@ def load(request):
 
 
 def link(request, from_node, to_node, separate=False, fake=''):
-    start = request.GET.get('start', None)
-    end = request.GET.get('end', None)
 
-    dryrun = True if fake != '' else False
+    # dryrun = True if fake != '' else False
 
-    links = []
-
-    links = Links.objects.filter(
-        local_ifce__node__name=from_node,
-        remote_ifce__node__name=to_node
-    )
-    if links:
-        response = []
-        datasources = []
-        for link in links:
-            res = link.as_dict()
-            response.append(res)
-            # get the datasources in order to create the graphs
-            ds = link.local_ifce.get_datasources(type='traffic')
-            # try to get all available datasources
-            if not ds:
-                ds = link.remote_ifce.get_datasources(type='traffic')
-            datasources.append(ds)
-        datasources = [val for sublist in datasources for val in sublist]
-        if not separate:
-            if start and end:
-                url = create_graph_for_interfaces(datasources, start, end, dryrun=dryrun) or False
-            else:
-                url = create_graph_for_interfaces(datasources, dryrun=dryrun) or False
-            result = {'links': response, 'graph': url}
-        else:
-            if start and end:
-                urls = graph_for_each_interface(datasources, start, end)
-            else:
-                urls = graph_for_each_interface(datasources)
-            result = urls
-    else:
-        result = {'links': [], 'graph': False}
+    result = get_graph_for_node_link(from_node, to_node, separate)
     return HttpResponse(json.dumps(result), content_type='application/json')
