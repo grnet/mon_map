@@ -6,6 +6,7 @@ from django.core.urlresolvers import reverse
 from django.conf import settings
 
 from network.models import Ifce
+from rg.models import Graph
 import gevent
 
 
