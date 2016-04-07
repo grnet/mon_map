@@ -180,9 +180,9 @@ $(document).ready(function () {
 						if (!err && data.links.length) {
 							var text;
 							if (data.graph !== false) {
-								text = '<h4>' + data.links[0].from + ' to ' + data.links[0].to + '</h4>' + '<img src="' + data.graph + '"/>'
+								text = '<h4>' + data.links[0].from_descr +'</h4>' + '<img src="' + data.graph + '"/>'
 							} else {
-								text = '<h4>' + data.links[0].from + ' to ' + data.links[0].to + '</h4>' + '<p>No datasources found..</p>'
+								text = '<h4>' + data.links[0].from_descr +'</h4>' + '<p>No datasources found..</p>'
 							}
 							d3.select(that).attr('data-load', text);
 						} else {
