@@ -244,3 +244,37 @@ def create_links_dict(links):
         except:
             continue
     return ifces
+
+
+def get_graph_for_node_link(local, remote, separate=False):
+
+    response = []
+
+    try:
+        graph = Graph.objects.get(
+            type='n2ntraffic',
+            description__contains='%s - %s' % (local, remote)
+        )
+    except:
+        graph = None
+
+    if graph:
+        if separate:
+            # '-1d', '-300' now need to be fixed values as we are not creating
+            # the graphs, only getting the ones that rg creates with those
+            # default values
+            response = graph_for_each_interface(
+                graph, graph.datasources.all(), '-1d', '-300')
+        else:
+            url = reverse(
+                'get-png-data',
+                kwargs={'path': '%s-1d-300.png' % graph.id}
+            )
+            response = {
+                'graph': url,
+                'links': [{"from_descr": graph.description}]
+            }
+
+    else:
+        response = {'graph': False, 'links': []}
+    return response
