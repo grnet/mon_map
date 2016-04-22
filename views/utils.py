@@ -7,7 +7,13 @@ from django.conf import settings
 
 from network.models import Ifce
 from rg.models import Graph
-import gevent
+# import gevent
+
+from gevent.pool import Pool
+
+CONCURRECY = 50
+pool = Pool(CONCURRECY)
+
 
 
 def last_x_rec(x):
@@ -86,10 +92,15 @@ def get_load_for_interfaces(ifces, key, start=None, end=None):
 def get_load_for_links(ifces, start=None, end=None):
     response = {}
     threads = []
+
+    spawned = 0
     for key, val in ifces.iteritems():
         # response.update(get_load_for_interfaces(val, key, start, end))
-        threads.append(gevent.spawn(get_load_for_interfaces, val, key, start, end))
-    gevent.joinall(threads)
+        threads.append(pool.spawn(get_load_for_interfaces, val, key, start, end))
+        spawned += 1
+        if spawned == CONCURRECY:
+            pool.join()
+    pool.join()
     for thread in threads:
         if thread.value:
             response.update(thread.value)
