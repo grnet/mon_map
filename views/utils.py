@@ -6,7 +6,7 @@ from django.core.urlresolvers import reverse
 from django.conf import settings
 
 from network.models import Ifce
-from rg.models import Graph
+from rg.models import Graph, DataSource
 # import gevent
 
 from gevent.pool import Pool
@@ -225,30 +225,53 @@ def create_graph_for_interfaces(datasources, start=None, end=None, **kwargs):
 
 def create_links_dict(links):
     ifces = {}
+    ifce_pairs = {}
+    # walk through links to get all interfaces
     for link in links:
         try:
-            if ifces.get(
-                '%s_%s' % (
-                    link.local_ifce.node.name, link.remote_ifce.node.name
-                )
-            ):
-                name = '%s_%s' % (link.local_ifce.node.name, link.remote_ifce.node.name)
-                prev = ifces.get(name)
-                prev.append(link.local_ifce.as_dict())
-                ifces.update({
-                    '%s_%s' % (
-                        link.local_ifce.node.name, link.remote_ifce.node.name
-                    ): prev
-                })
-            else:
-                ifces.update({
-                    '%s_%s' % (
-                        link.local_ifce.node.name, link.remote_ifce.node.name
-                    ): [link.local_ifce.as_dict()]
-                })
-        except:
+            ifces.setdefault(link.local_ifce.pk, link.local_ifce)
+            ifces.setdefault(link.remote_ifce.pk, link.remote_ifce)
+        except AttributeError:
             continue
-    return ifces
+
+    # fetch all DataSource objects for our set of interfaces,
+    # pre-loading related RrdFile objects
+    dss = DataSource.objects.\
+        filter(object_id__in=ifces.keys(),
+               content_type__model='ifce',
+               graph__type='traffic').\
+        select_related('rrdfile')
+    # force QuerySet to be evaluated, returning a list of tuples
+    # indexed by ifce
+    dss = [(x.object_id, x) for x in dss]
+
+    # fill the dict for each ifce (previously: ifce.as_dict())
+    for k, ifce in ifces.iteritems():
+        datasources = [x[1] for x in dss if x[0] == k]
+        if datasources:
+            datasources = datasources[0].rrdfile.path.__str__()
+        ifces[k] = {
+            'ifce_id': ifce.pk,
+            'bandwidth': ifce.bandwidth,
+            'node': ifce.node.name,
+            'datasources': datasources
+        }
+
+    # re-iterate links to create {ifce_pair: [ifce_dicts]}
+    for link in links:
+        try:
+            localifce_as_dict = ifces.get(link.local_ifce.pk)
+            ifce_pair_name = '%s_%s' % (link.local_ifce.node.name,
+                                        link.remote_ifce.node.name)
+            ifce_pair = ifce_pairs.get(ifce_pair_name)
+            if ifce_pair:
+                ifce_pair.append(localifce_as_dict)
+            else:
+                ifce_pairs.update({ifce_pair_name: [localifce_as_dict]})
+        except AttributeError:
+            continue
+
+    return ifce_pairs
 
 
 def get_graph_for_node_link(local, remote, separate=False):
