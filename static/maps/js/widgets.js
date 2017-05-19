@@ -93,7 +93,7 @@ $(function(){
 	   		$.get(networkLoadDiv.data('url'), function(data) {
                 var load = [];
 	   			for (link in data) {
-                    var obj = {'name': link, 'load':  data[link].load.in + data[link].load.out};
+                    var obj = {'name': link, 'load':  data[link].load.out};
                     load.push(obj);
 	   			}
                 var max = _.sortBy(load, 'load').reverse().slice(0,3);
